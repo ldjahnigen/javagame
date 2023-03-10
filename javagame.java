@@ -14,13 +14,10 @@ class KeyFrame extends JFrame implements KeyListener {
     public JPanel panel;
     public Player player;
     public char[][] map;
+    public JFrame frame;
 
-    public KeyFrame(String title, int width, int height, JLabel[] labels, Player player_, char[][] map_) {
-        panel = new JPanel();
-        for (JLabel l : labels) {
-          panel.add(l);
-        }
-        
+    public KeyFrame(JFrame frame_, String title, int width, int height, JPanel panel_, Player player_, char[][] map_) {
+        panel = panel_;
         map = map_;
         player = player_;
 
@@ -32,6 +29,24 @@ class KeyFrame extends JFrame implements KeyListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
+    public void remap(char[][] map) {
+      panel.removeAll();
+      JLabel[] labels = new JLabel[8];
+      for (int i = 0; i < 8; i++) { 
+        String text = "";
+        for (int j = 0; j < 8; j++) {
+          text += map[i][j];  
+        }
+        labels[i] = new JLabel(text);
+        panel.add(labels[i]);
+        labels[i].setHorizontalAlignment(SwingConstants.CENTER);
+        labels[i].setVerticalAlignment(SwingConstants.CENTER);
+        panel.repaint();
+        panel.revalidate();
+    }
+
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
       // don't do anything
@@ -41,23 +56,34 @@ class KeyFrame extends JFrame implements KeyListener {
     public void keyPressed(KeyEvent e) {
         // This method is called when a key is pressed down
         int keyCode = e.getKeyCode();
-        if (keyCode == 38) {
-          player.up();
-          player.updateMap(map);
-          System.out.println(player.toString());
+        if (keyCode == 40) {
+          if (player.y != 7) {
+            player.down();
+            map = player.updateMap();
+            remap(map); 
+          }
         }
-        else if (keyCode == 40) {
-          player.down();
-          System.out.println(player.toString());
+        else if (keyCode == 38) {
+          if (player.y != 0) {
+            player.up();
+            map = player.updateMap();
+            remap(map); 
+          }
         }
         else if (keyCode == 37) {
-          player.left();
-          System.out.println(player.toString());
+          if (player.x != 0) {
+            player.left();
+            map = player.updateMap();
+            remap(map); 
+          }
         }
         else if (keyCode == 39) {
-          player.right();
-          System.out.println(player.toString());
+          if (player.x != 7) {
+            player.right();
+            map = player.updateMap();
+            remap(map); 
         }
+      }
     }
     
     @Override
@@ -69,8 +95,10 @@ class KeyFrame extends JFrame implements KeyListener {
 class GUI {
   public GUI() {
     //initialize frame
-    // create panel
-    JPanel panel = new JPanel(new GridLayout(0, 1));
+    JFrame frame = new JFrame("Snake");
+
+    // create panel with GridLayout
+    JPanel panel = new JPanel(new GridLayout(8, 8));
 
     char[][] map = {{'#', '#', '#', '#', '#', '#', '#', '#'},
                     {'#', '#', '#', '#', '#', '#', '#', '#'},
@@ -81,24 +109,24 @@ class GUI {
                     {'#', '#', '#', '#', '#', '#', '#', '#'},
                     {'#', '#', '#', '#', '#', '#', '#', '#'}};
 
-    JLabel[] labels = new JLabel[8];
+    JLabel[][] labels = new JLabel[8][8];
     Player player = new Player(4, 4);
-    map = player.updateMap(map);
+    map = player.updateMap();
     for (int i = 0; i < 8; i++) { 
-      String text = "";
       for (int j = 0; j < 8; j++) {
-        text += map[i][j];  
+        String text = "" + map[i][j];
+        labels[i][j] = new JLabel(text);
+        panel.add(labels[i][j]);
+        labels[i][j].setHorizontalAlignment(SwingConstants.CENTER);
+        labels[i][j].setVerticalAlignment(SwingConstants.CENTER);
       }
-      labels[i] = new JLabel(text);
-      panel.add(labels[i]);
-      labels[i].setHorizontalAlignment(SwingConstants.CENTER);
-      labels[i].setVerticalAlignment(SwingConstants.CENTER);
     }
-    KeyFrame frame = new KeyFrame("Snake", 100, 221, labels, player, map);
+
+    KeyFrame keyframe = new KeyFrame(frame, "Snake", 120, 100, panel, player, map);
 
   }
-
 }
+
 
 class Player {
   int x;
@@ -110,11 +138,11 @@ class Player {
   }
   
   public void up() {
-    y++;
+    y--;
   }
 
   public void down() {
-    y--;
+    y++;
   }
 
   public void left() {
@@ -130,10 +158,16 @@ class Player {
     return Integer.toString(x) + Integer.toString(y); 
   }
 
-  public char[][] updateMap(char[][] map) {
-    char[][] newmap = map;
+  public char[][] updateMap() {
+    char[][] newmap = {{'#', '#', '#', '#', '#', '#', '#', '#'},
+                    {'#', '#', '#', '#', '#', '#', '#', '#'},
+                    {'#', '#', '#', '#', '#', '#', '#', '#'},
+                    {'#', '#', '#', '#', '#', '#', '#', '#'},
+                    {'#', '#', '#', '#', '#', '#', '#', '#'},
+                    {'#', '#', '#', '#', '#', '#', '#', '#'},
+                    {'#', '#', '#', '#', '#', '#', '#', '#'},
+                    {'#', '#', '#', '#', '#', '#', '#', '#'}};
     newmap[y][x] = 'P';
-
     return newmap;
   }
 }
