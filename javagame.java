@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 
 public class javagame {
@@ -9,90 +12,43 @@ public class javagame {
   }
 }
 
-class KeyFrame extends JFrame implements KeyListener {
-    
-    public JPanel panel;
-    public Player player;
-    public char[][] map;
-    public JFrame frame;
-
-    public KeyFrame(JFrame frame_, String title, int width, int height, JPanel panel_, Player player_, char[][] map_) {
-        panel = panel_;
-        map = map_;
-        player = player_;
-
-        add(panel);
-        setTitle(title);
-        addKeyListener(this);
-        setSize(width, height);
-        setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-    
-    public void remap(char[][] map) {
-      panel.removeAll();
-      JLabel[] labels = new JLabel[8];
-      for (int i = 0; i < 8; i++) { 
-        String text = "";
-        for (int j = 0; j < 8; j++) {
-          text += map[i][j];  
-        }
-        labels[i] = new JLabel(text);
-        panel.add(labels[i]);
-        labels[i].setHorizontalAlignment(SwingConstants.CENTER);
-        labels[i].setVerticalAlignment(SwingConstants.CENTER);
-        panel.repaint();
-        panel.revalidate();
-    }
-
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-      // don't do anything
-    }
-    
-    @Override
-    public void keyPressed(KeyEvent e) {
-        // This method is called when a key is pressed down
-        int keyCode = e.getKeyCode();
-        if (keyCode == 40) {
-          if (player.y != 7) {
-            player.down();
-            map = player.updateMap();
-            remap(map); 
-          }
-        }
-        else if (keyCode == 38) {
-          if (player.y != 0) {
-            player.up();
-            map = player.updateMap();
-            remap(map); 
-          }
-        }
-        else if (keyCode == 37) {
-          if (player.x != 0) {
-            player.left();
-            map = player.updateMap();
-            remap(map); 
-          }
-        }
-        else if (keyCode == 39) {
-          if (player.x != 7) {
-            player.right();
-            map = player.updateMap();
-            remap(map); 
-        }
-      }
-    }
-    
-    @Override
-    public void keyReleased(KeyEvent e) {
-      // don't do anything
-    }
-}
 
 class GUI {
+  public static char[][] readFile(String filename) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(filename));
+        String line;
+        int numRows = 0;
+        int maxCols = 0;
+        while ((line = reader.readLine()) != null) {
+            numRows++;
+            maxCols = Math.max(maxCols, line.length());
+        }
+        reader.close();
+
+        char[][] charArray = new char[numRows][maxCols];
+        reader = new BufferedReader(new FileReader(filename));
+        int row = 0;
+        while ((line = reader.readLine()) != null) {
+            char[] chars = line.toCharArray();
+            System.arraycopy(chars, 0, charArray[row], 0, chars.length);
+            row++;
+        }
+        reader.close();
+
+        return charArray;
+    }  public char[][] updateMap(Player player) {
+    char[][] newmap = {{'#', '#', '#', '#', '#', '#', '#', '#'},
+                    {'#', '#', '#', '#', '#', '#', '#', '#'},
+                    {'#', '#', '#', '#', '#', '#', '#', '#'},
+                    {'#', '#', '#', '#', '#', '#', '#', '#'},
+                    {'#', '#', '#', '#', '#', '#', '#', '#'},
+                    {'#', '#', '#', '#', '#', '#', '#', '#'},
+                    {'#', '#', '#', '#', '#', '#', '#', '#'},
+                    {'#', '#', '#', '#', '#', '#', '#', '#'}};
+    newmap[player.y][player.x] = 'P';
+    return newmap;
+  }
+
   public GUI() {
     //initialize frame
     JFrame frame = new JFrame("Snake");
@@ -111,7 +67,7 @@ class GUI {
 
     JLabel[][] labels = new JLabel[8][8];
     Player player = new Player(4, 4);
-    map = player.updateMap();
+    map = updateMap(player);
     for (int i = 0; i < 8; i++) { 
       for (int j = 0; j < 8; j++) {
         String text = "" + map[i][j];
@@ -122,52 +78,7 @@ class GUI {
       }
     }
 
-    KeyFrame keyframe = new KeyFrame(frame, "Snake", 120, 100, panel, player, map);
+    KeyFrame keyframe = new KeyFrame(frame, "Snake", 120, 100, panel, player, this);
 
-  }
-}
-
-
-class Player {
-  int x;
-  int y;
-    
-  public Player(int x_, int y_) {
-    x = x_;
-    y = y_;
-  }
-  
-  public void up() {
-    y--;
-  }
-
-  public void down() {
-    y++;
-  }
-
-  public void left() {
-    x--;
-  }
-
-  public void right() {
-    x++;
-  }
-
-  @Override
-  public String toString() {
-    return Integer.toString(x) + Integer.toString(y); 
-  }
-
-  public char[][] updateMap() {
-    char[][] newmap = {{'#', '#', '#', '#', '#', '#', '#', '#'},
-                    {'#', '#', '#', '#', '#', '#', '#', '#'},
-                    {'#', '#', '#', '#', '#', '#', '#', '#'},
-                    {'#', '#', '#', '#', '#', '#', '#', '#'},
-                    {'#', '#', '#', '#', '#', '#', '#', '#'},
-                    {'#', '#', '#', '#', '#', '#', '#', '#'},
-                    {'#', '#', '#', '#', '#', '#', '#', '#'},
-                    {'#', '#', '#', '#', '#', '#', '#', '#'}};
-    newmap[y][x] = 'P';
-    return newmap;
   }
 }
