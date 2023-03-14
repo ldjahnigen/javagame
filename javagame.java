@@ -57,7 +57,9 @@ class GUI {
       map[lasty][lastx] = '.';
       map[player.y][player.x] = 'P';
       labels[lasty][lastx].setText(Character.toString(map[lasty][lastx]));
+      labels[lasty][lastx].setForeground(Color.white);
       labels[player.y][player.x].setText("P");
+      labels[player.y][player.x].setForeground(Color.magenta);
       return map;
   }
 
@@ -115,14 +117,15 @@ class GUI {
         String text = "" + map[i][j];
         labels[i][j] = new JLabel(text);
         labels[i][j].setForeground(Color.white);
-        labels[i][j].setBackground(Color.gray);
+        labels[i][j].setBackground(Color.black);
         labels[i][j].setOpaque(true);
         labels[i][j].setBounds(hor_interval * j + 92, ver_interval * i, 10, 10);
         labels[i][j].setFont(font);
         panel.add(labels[i][j]);
       }
     }
-      
+
+    // add info labels  
     JLabel health = new JLabel("Health: ");
     health.setForeground(Color.white);
     health.setFont(font);
@@ -132,6 +135,7 @@ class GUI {
     // place the player and create a keyframe
     map[player.y][player.x] = 'P';
     labels[player.y][player.x].setText("P");
+    labels[player.y][player.x].setForeground(Color.magenta);
     KeyFrame keyframe = new KeyFrame(frame, "Game", pixelwidth, pixelheight, panel, player, this);
   }
 }
