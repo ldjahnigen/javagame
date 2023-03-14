@@ -30,12 +30,12 @@ public class MapGenerator {
     
     // outline map with border
     for (int i = 0; i < map[0].length; i++) {
-      map[0][i] = '#';
-      map[map.length - 1][i] = '#';
+      map[0][i] = 'H';
+      map[map.length - 1][i] = 'H';
     }
     for (int i = 0; i < map.length; i++) {
-      map[i][0] = '#';
-      map[i][map[0].length - 1] = '#';
+      map[i][0] = 'H';
+      map[i][map[0].length - 1] = 'H';
     }
 
 
@@ -45,17 +45,17 @@ public class MapGenerator {
 
       // define dimensions
       Random rand = new Random();
-      int width = rand.nextInt(4, 31);
-      int height = rand.nextInt(4, 31);
+      int width = rand.nextInt(4, 25);
+      int height = rand.nextInt(4, 25);
       int xcoord = rand.nextInt(x - 1);
       int ycoord = rand.nextInt(y - 1);
 
       // make sure the dungeon fits in the map
-      if ((xcoord + width) >= map[0].length) {
+      if ((xcoord + width) > map[0].length) {
         width -= (xcoord + width) - map[0].length; 
       }
 
-      if ((ycoord + height) >= map.length) {
+      if ((ycoord + height) > map.length) {
         height -= (ycoord + height) - map.length; 
       }
       
@@ -71,14 +71,33 @@ public class MapGenerator {
       
       // outline with '#'
       for (int ii = 0; ii < dungeon[0].length; ii++) {
-        dungeon[0][ii] = '#';
-        dungeon[dungeon.length - 1][ii] = '#';
+        dungeon[0][ii] = 'H';
+        dungeon[dungeon.length - 1][ii] = 'H';
       }
       for (int ii = 0; ii < dungeon.length; ii++) {
-        dungeon[ii][0] = '#';
-        dungeon[ii][dungeon[0].length - 1] = '#';
+        dungeon[ii][0] = 'H';
+        dungeon[ii][dungeon[0].length - 1] = 'H';
       }
 
+      // check for overlaps at the corners
+      String nw = Character.toString(map[ycoord][xcoord]);
+      String ne = Character.toString(map[ycoord + height - 1][xcoord + width - 1]);
+      String sw = Character.toString(map[ycoord + height - 1][xcoord]);
+      String se = Character.toString(map[ycoord][xcoord + width - 1]);
+
+      if (nw.equals(".") || nw.equals("H")) {
+        continue;
+      }
+      if (ne.equals(".") || ne.equals("H")) {
+        continue;
+      }
+      if (se.equals(".") || se.equals("H")) {
+        continue;
+      }
+      if (sw.equals(".") || sw.equals("H")) {
+        continue;
+      }
+      
       // place finished dungeon on the map  
       int xcoordi = xcoord;
       int ycoordi = ycoord;

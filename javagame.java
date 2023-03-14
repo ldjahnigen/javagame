@@ -1,9 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.awt.Color;
 
 public class javagame {
@@ -99,8 +102,14 @@ class GUI {
         }
     }
 
+    // create player
     Player player = new Player(xplayer, yplayer);
 
+    // create font
+    FontLoader fontloader = new FontLoader();
+    Font font = fontloader.loadFont("Early GameBoy.ttf");
+
+    // create and place the labels on the panel
     for (int i = 0; i < height; i++) { 
       for (int j = 0; j < width; j++) {
         String text = "" + map[i][j];
@@ -109,11 +118,18 @@ class GUI {
         labels[i][j].setBackground(Color.gray);
         labels[i][j].setOpaque(true);
         labels[i][j].setBounds(hor_interval * j + 92, ver_interval * i, 10, 10);
-        labels[i][j].setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 15));
+        labels[i][j].setFont(font);
         panel.add(labels[i][j]);
       }
     }
+      
+    JLabel health = new JLabel("Health: ");
+    health.setForeground(Color.white);
+    health.setFont(font);
+    health.setBounds(95, 735, 200, 100);
+    panel.add(health);
 
+    // place the player and create a keyframe
     map[player.y][player.x] = 'P';
     labels[player.y][player.x].setText("P");
     KeyFrame keyframe = new KeyFrame(frame, "Game", pixelwidth, pixelheight, panel, player, this);
