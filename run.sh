@@ -1,2 +1,2 @@
 javac javagame.java
-  java javagame.java
+java javagame.java
