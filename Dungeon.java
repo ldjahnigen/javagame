@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class Dungeon {
   char[][] map;
+  int[] center = {0, 0};
   
   public Dungeon(char[][] map_) {
     map = map_;
