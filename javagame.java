@@ -178,7 +178,11 @@ class KeyFrame extends JFrame implements KeyListener {
             int y = player.y;
             int x = player.x;
             player.down();
-            map = gui.updateMap(player, map, y, x, gui.labels);
+            if (Character.toString(map[player.y][player.x]).equals(".")) {
+              map = gui.updateMap(player, map, y, x, gui.labels);
+            } else {
+              player.up();
+            }
           }
         }
         else if (keyCode == 38) {
@@ -186,7 +190,11 @@ class KeyFrame extends JFrame implements KeyListener {
             int y = player.y;
             int x = player.x;
             player.up();
-            map = gui.updateMap(player, map, y, x, gui.labels);
+            if (Character.toString(map[player.y][player.x]).equals(".")) {
+              map = gui.updateMap(player, map, y, x, gui.labels);
+            } else {
+              player.down();
+            }
           }
         }
         else if (keyCode == 37) {
@@ -194,7 +202,11 @@ class KeyFrame extends JFrame implements KeyListener {
             int y = player.y;
             int x = player.x;
             player.left();
-            map = gui.updateMap(player, map, y, x, gui.labels);
+            if (Character.toString(map[player.y][player.x]).equals(".")) {
+              map = gui.updateMap(player, map, y, x, gui.labels);
+            } else {
+              player.right();
+            }
           }
         }
         else if (keyCode == 39) {
@@ -202,7 +214,11 @@ class KeyFrame extends JFrame implements KeyListener {
             int y = player.y;
             int x = player.x;
             player.right();
-            map = gui.updateMap(player, map, y, x, gui.labels);
+            if (Character.toString(map[player.y][player.x]).equals(".")) {
+              map = gui.updateMap(player, map, y, x, gui.labels);
+            } else {
+              player.left();
+            }
         }
       }
     }
