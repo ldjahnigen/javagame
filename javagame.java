@@ -121,7 +121,6 @@ class GUI {
         panel.add(labels[i][j]);
       }
     }
-    labels[10][34].setText("H");
 
     // add info labels  
     JLabel health = new JLabel("Health: ");
