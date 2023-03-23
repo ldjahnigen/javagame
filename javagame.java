@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.awt.Color;
+import java.util.ArrayList;
 
 public class javagame {
   public static void main(String[] args) {
@@ -22,12 +23,15 @@ class GUI {
   public int height;
   public int width;
   public char[][] map;
-  public JLabel[][] labels;
+  public Tile[][] labels;
   public int pixelwidth;
   public int pixelheight;
   public int ver_interval;
   public int hor_interval;
   public JPanel panel;
+  public Color light = Color.white;
+  public Color dark = Color.black;
+  public Color seen = Color.gray;
 
   public static char[][] readFile(String filename) throws IOException {
     BufferedReader reader = new BufferedReader(new FileReader(filename));
@@ -52,14 +56,38 @@ class GUI {
     return charArray;
   }  
 
-  public char[][] updateMap(Player player, char[][] map, int lasty, int lastx, JLabel[][] labels) {
-      map[lasty][lastx] = '.';
-      map[player.y][player.x] = 'P';
-      labels[lasty][lastx].setText(Character.toString(map[lasty][lastx]));
-      labels[lasty][lastx].setForeground(Color.white);
-      labels[player.y][player.x].setText("P");
-      labels[player.y][player.x].setForeground(Color.magenta);
-      return map;
+  public char[][] updateMap(Player player, char[][] map, int lasty, int lastx, Tile[][] labels) {
+    map[lasty][lastx] = '.';
+    map[player.y][player.x] = 'P';
+    labels[lasty][lastx].setText(Character.toString(map[lasty][lastx]));
+    labels[lasty][lastx].setForeground(dark);
+    labels[player.y][player.x].setText("P");
+    labels[player.y][player.x].setForeground(Color.magenta);
+    losTrace(player, labels);
+    return map;
+  }
+
+  public void losTrace(Player player, Tile[][] labels) {
+    // if it has been seen, make it gray
+    for (int i = 0; i < labels.length; i++) {
+      for (int j = 0; j < labels[0].length; j++) {
+        if (labels[i][j].wasSeen) {
+          labels[i][j].setForeground(seen);
+        }
+      }
+    }
+    // if a label is in a 12x12 grid, make it white or purple if it is in the center
+    for (int i = player.y - 6; i < player.y + 6; i++) {
+      for (int j = player.x - 6; j < player.x + 6; j++) {
+        if (i == player.y && j == player.x) {
+          labels[i][j].setForeground(Color.magenta);
+          labels[i][j].wasSeen = true;
+        } else {
+          labels[i][j].setForeground(light);
+          labels[i][j].wasSeen = true;
+        }
+      }
+    }
   }
 
   public GUI(int width_, int height_) {
@@ -78,8 +106,7 @@ class GUI {
     panel = new JPanel();
     panel.setLayout(null);
     panel.setBackground(Color.black);
-    labels = new JLabel[height][width];
-    
+    labels = new Tile[height][width];
 
     // put the map into a char[][]
     try {
@@ -113,9 +140,9 @@ class GUI {
     // create and place the labels on the panel
     for (int i = 0; i < height; i++) { 
       for (int j = 0; j < width; j++) {
-        labels[i][j] = new JLabel(Character.toString(map[i][j]));
-        labels[i][j].setForeground(Color.white);
-        labels[i][j].setBackground(Color.black);
+        labels[i][j] = new Tile(Character.toString(map[i][j]));
+        labels[i][j].setForeground(dark);
+        labels[i][j].setBackground(dark);
         labels[i][j].setOpaque(true);
         labels[i][j].setBounds(hor_interval * j + 92, ver_interval * i, 10, 10);
         panel.add(labels[i][j]);
@@ -128,6 +155,11 @@ class GUI {
     health.setFont(font);
     health.setBounds(95, 735, 200, 100);
     panel.add(health);
+    JLabel health_val = new JLabel(Integer.toString(player.health));
+    health_val.setForeground(Color.white);
+    health_val.setFont(font);
+    health_val.setBounds(195, 735, 200, 100);
+    panel.add(health_val);
 
     // place the player and create a keyframe
     map[player.y][player.x] = 'P';
@@ -224,4 +256,11 @@ class KeyFrame extends JFrame implements KeyListener {
     public void keyReleased(KeyEvent e) {
       // don't do anything
     }
+}
+
+class Tile extends JLabel {
+  boolean wasSeen = false;
+  public Tile(String text) {
+    this.setText(text);
+  }
 }

@@ -2,6 +2,7 @@ public class Player {
   private static final long serialVersionUID = 1L;
   public int x;
   public int y;
+  public int health = 100;
     
   public Player(int x_, int y_) {
     x = x_;
@@ -22,6 +23,10 @@ public class Player {
 
   public void right() {
     x++;
+  }
+
+  public void updateHealth(int val) {
+    health += val;
   }
 
   @Override
