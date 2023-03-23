@@ -119,7 +119,6 @@ class GUI {
         labels[i][j].setOpaque(true);
         labels[i][j].setBounds(hor_interval * j + 92, ver_interval * i, 10, 10);
         panel.add(labels[i][j]);
-        System.out.println(labels[i][j].getText());
       }
     }
     labels[10][34].setText("H");
