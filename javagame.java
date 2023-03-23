@@ -49,7 +49,6 @@ class GUI {
         row++;
     }
     reader.close();
-    
     return charArray;
   }  
 
@@ -64,11 +63,11 @@ class GUI {
   }
 
   public GUI(int width_, int height_) {
+    // define dimensions
     width = width_;
     height = height_;
     pixelwidth = 1600;
     pixelheight = 900;
-
     hor_interval = (pixelwidth - 100) / width;
     ver_interval = (pixelheight - 100) / height;
 
@@ -82,7 +81,7 @@ class GUI {
     labels = new JLabel[height][width];
     
 
-    // put the map into a variable
+    // put the map into a char[][]
     try {
     map = readFile("map.txt");
     } catch (IOException e) {
@@ -114,16 +113,16 @@ class GUI {
     // create and place the labels on the panel
     for (int i = 0; i < height; i++) { 
       for (int j = 0; j < width; j++) {
-        String text = "" + map[i][j];
-        labels[i][j] = new JLabel(text);
+        labels[i][j] = new JLabel(Character.toString(map[i][j]));
         labels[i][j].setForeground(Color.white);
         labels[i][j].setBackground(Color.black);
         labels[i][j].setOpaque(true);
         labels[i][j].setBounds(hor_interval * j + 92, ver_interval * i, 10, 10);
-        labels[i][j].setFont(font);
         panel.add(labels[i][j]);
+        System.out.println(labels[i][j].getText());
       }
     }
+    labels[10][34].setText("H");
 
     // add info labels  
     JLabel health = new JLabel("Health: ");

@@ -12,7 +12,7 @@ public class FontLoader {
     File fontFile = new File(location);
     try {
       Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
-      font = font.deriveFont(Font.BOLD, 10f);
+      font = font.deriveFont(Font.BOLD, 14f);
       return font;
     } catch (FontFormatException e) {
       
